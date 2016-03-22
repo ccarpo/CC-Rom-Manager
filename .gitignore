@@ -3,6 +3,7 @@ capybara-*.html
 .rspec
 /log
 /tmp
+/bin
 /db/*.sqlite3
 /db/*.sqlite3-journal
 /public/system
@@ -33,3 +34,7 @@ bower.json
 
 # Ignore pow environment settings
 .powenv
+
+#Ignore swf and roms
+/public/nesbox
+/public/nesroms

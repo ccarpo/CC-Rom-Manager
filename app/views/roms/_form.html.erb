@@ -1,0 +1,38 @@
+<%= form_for :rom, url: roms_path, :html => { :multipart => true } do |f| %>
+
+  <p>
+    <%= f.label :title %><br>
+    <%= f.text_field :title %>
+  </p>
+  <p>
+    <%= f.label :description %><br>
+    <%= f.text_area :description %>
+  </p>
+  <p>
+    <%= f.label :publisher %><br>
+    <%= f.text_field :publisher %>
+  </p>
+  <p>
+    <%= f.label :developer %><br>
+    <%= f.text_field :developer %>
+  </p>
+  <p>
+    <%= f.label :rating %><br>
+    <%= f.text_field :rating %>
+  </p>
+  <p>
+    <%= f.label :releasedate %><br>
+    <%= f.text_field :releasedate %>
+  </p>
+  <p>
+    <%= f.label :players %><br>
+    <%= f.text_area :players %>
+  </p>
+  <p>
+    <%= f.label :frontcover %><br>
+    <%= f.file_field :frontcover %>
+  </p>
+  <p>
+    <%= f.submit %>
+  </p>
+<% end %>

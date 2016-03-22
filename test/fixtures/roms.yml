@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  description: MyText
+  publisher: MyString
+  rating: 1
+  players: 1
+  releasedate: 2016-03-21
+  developer: MyString
+  frontcover: 
+  backcover: 
+
+two:
+  title: MyString
+  description: MyText
+  publisher: MyString
+  rating: 1
+  players: 1
+  releasedate: 2016-03-21
+  developer: MyString
+  frontcover: 
+  backcover: 
