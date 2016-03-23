@@ -1,22 +1,24 @@
 <h1>Listing roms</h1>
 
-<%= link_to 'New rom', new_rom_path %>
+<!-- %= link_to 'New rom', new_rom_path % -->
 
 <table>
   <tr>
+    <th>Console</th>
     <th>Title</th>
     <th>Description</th>
   </tr>
 
   <% @roms.each do |rom| %>
     <tr>
+      <td><%= rom.console %></td>
       <td><%= rom.title %></td>
       <td><%= rom.description %></td>
       <td><%= link_to 'Show', rom_path(rom) %></td>
-      <td><%= link_to 'Edit', edit_rom_path(rom) %></td>
+      <!-- td><%= link_to 'Edit', edit_rom_path(rom) %></td>
       <td><%= link_to 'Destroy', rom_path(rom),
               method: :delete,
-              data: { confirm: 'Are you sure?' } %></td>
+              data: { confirm: 'Are you sure?' } %></td -->
     </tr>
   <% end %>
 </table>
