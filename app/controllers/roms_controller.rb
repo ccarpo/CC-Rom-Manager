@@ -3,6 +3,7 @@ class RomsController < ApplicationController
   end
 
   def index
+    @rom_grid = initialize_grid(Rom, per_page: 40)
     @roms = Rom.all
   end
 
@@ -43,7 +44,7 @@ class RomsController < ApplicationController
 
 private
   def rom_params
-    params.require(:rom).permit(:title, :description, :publisher, :developer, :rating, :players, :frontcover, :frontcover_file_name)
+    params.require(:rom).permit(:title, :description, :publisher, :developer, :rating, :players, :frontcover, :frontcover_file_name, :frontcover_file_size, :backcover, :backcover_file_name, :backcover_file_size)
   end
 
 end

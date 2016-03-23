@@ -25,6 +25,13 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 #------------------------
 gem "paperclip", "~> 4.3"
+gem "wice_grid", '3.6.0.pre4'
+gem 'font-awesome-sass',  '~> 4.3'
+gem 'bootstrap', '~> 4.0.0.alpha3'
+source 'http://rails-assets.org' do
+  gem 'rails-assets-tether', '>= 1.1.0'
+end
+gem 'simpleconfig'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

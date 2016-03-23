@@ -2,23 +2,22 @@
 
 <!-- %= link_to 'New rom', new_rom_path % -->
 
-<table>
-  <tr>
-    <th>Console</th>
-    <th>Title</th>
-    <th>Description</th>
-  </tr>
+<%= grid(@rom_grid, show_filters: :always) do |g|
 
-  <% @roms.each do |rom| %>
-    <tr>
-      <td><%= rom.console %></td>
-      <td><%= rom.title %></td>
-      <td><%= rom.description %></td>
-      <td><%= link_to 'Show', rom_path(rom) %></td>
-      <!-- td><%= link_to 'Edit', edit_rom_path(rom) %></td>
-      <td><%= link_to 'Destroy', rom_path(rom),
-              method: :delete,
-              data: { confirm: 'Are you sure?' } %></td -->
-    </tr>
-  <% end %>
-</table>
+  g.column name: "Konsole", attribute: 'console',
+    custom_filter: {'NES' => 'nes', 'SNES' => 'snes', 'GB(C)' => 'gbc', 'GBA' => 'gba', 'N64' => 'n64', 'SEGA' => 'sega'} do |rom|
+    rom.console
+  end
+
+  g.column  name: "Titel", attribute: 'title' do |rom|
+    rom.title
+  end
+
+  g.column name: "Cover" do |rom|
+    image_tag rom.frontcover.url(:small)
+  end
+
+  g.column do |rom|
+    link_to('Show', rom_path(rom))
+  end
+end -%>

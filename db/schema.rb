@@ -11,14 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160322140006) do
-
-  create_table "cc_configs", force: :cascade do |t|
-    t.string   "name"
-    t.string   "value"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
+ActiveRecord::Schema.define(version: 20160322094702) do
 
   create_table "roms", force: :cascade do |t|
     t.string   "title"

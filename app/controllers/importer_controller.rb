@@ -4,6 +4,9 @@ class ImporterController < ApplicationController
   end
 
   def importAll
+    config = SimpleConfig.for(:application)
+    logger.debug(config.my_variable.to_s)
+
     #import nes
     @nesRomCount, @nesImportedRomCount, @nesDeletedCount = importByType('nes', 'D:/projects/garbage/rails/ccrm/public/nesroms', 'nes')
     #import snes
@@ -32,10 +35,10 @@ class ImporterController < ApplicationController
       # get title from file named
       filename = file.gsub(/.*\//, '')
       title = filename[/[\w\d\s\-\&\.\,\!\'\+]*/].strip
-      romFound = Rom.select("title").where("title LIKE \""+title+"\" and console LIKE \""+type+"\" ").first
+      romFound = Rom.select("filename").where("filename LIKE \""+filename+"\" and console LIKE \""+type+"\" ").first
       #check if rom is already in DB
       if romFound == nil
-        logger.debug("New Entry")
+        logger.debug("New Entry: "+title)
         #create rom
         newRom = Rom.new
         newRom.title = title
@@ -44,6 +47,7 @@ class ImporterController < ApplicationController
         newRom.save
         importedCount += 1
       else
+        logger.debug("Update Entry: " + romFound.title)
         romFound.updated_at = importTime
         romFound.save
       end
