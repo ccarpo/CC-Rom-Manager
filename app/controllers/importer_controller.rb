@@ -5,20 +5,18 @@ class ImporterController < ApplicationController
 
   def importAll
     config = SimpleConfig.for(:application)
-    logger.debug(config.my_variable.to_s)
-
     #import nes
-    @nesRomCount, @nesImportedRomCount, @nesDeletedCount = importByType('nes', 'D:/projects/garbage/rails/ccrm/public/nesroms', 'nes')
+    @nesRomCount, @nesImportedRomCount, @nesDeletedCount = importByType('nes', config.nes.romPath, 'nes')
     #import snes
-    @snesRomCount, @snesImportedRomCount, @snesDeletedCount = importByType('snes', 'D:/projects/garbage/rails/ccrm/public/snesroms', 'zip')
+    @snesRomCount, @snesImportedRomCount, @snesDeletedCount = importByType('snes', config.snes.romPath, 'zip')
     #import gb(c)
-    @gbcRomCount, @gbcImportedRomCount, @gbcDeletedCount = importByType('gbc', 'D:/projects/garbage/rails/ccrm/public/gbcroms', 'zip')
+    @gbcRomCount, @gbcImportedRomCount, @gbcDeletedCount = importByType('gbc', config.gbc.romPath, 'zip')
     #import gba
-    @gbaRomCount, @gbaImportedRomCount, @gbaDeletedCount = importByType('gba', 'D:/projects/garbage/rails/ccrm/public/gbaroms', 'zip')
+    @gbaRomCount, @gbaImportedRomCount, @gbaDeletedCount = importByType('gba', config.gba.romPath, 'zip')
     #import n64
-    @n64RomCount, @n64ImportedRomCount, @n64DeletedCount = importByType('n64', 'D:/projects/garbage/rails/ccrm/public/n64roms', 'zip')
+    @n64RomCount, @n64ImportedRomCount, @n64DeletedCount = importByType('n64', config.n64.romPath, 'zip')
     #import sega
-    @segaRomCount, @segaImportedRomCount, @segaDeletedCount = importByType('sega', 'D:/projects/garbage/rails/ccrm/public/segaroms', 'zip')
+    @segaRomCount, @segaImportedRomCount, @segaDeletedCount = importByType('sega', config.sega.romPath, 'zip')
     render 'import'
   end
 
@@ -35,7 +33,7 @@ class ImporterController < ApplicationController
       # get title from file named
       filename = file.gsub(/.*\//, '')
       title = filename[/[\w\d\s\-\&\.\,\!\'\+]*/].strip
-      romFound = Rom.select("filename").where("filename LIKE \""+filename+"\" and console LIKE \""+type+"\" ").first
+      romFound = Rom.where("filename LIKE \""+filename+"\" and console LIKE \""+type+"\" ").first
       #check if rom is already in DB
       if romFound == nil
         logger.debug("New Entry: "+title)
@@ -47,7 +45,7 @@ class ImporterController < ApplicationController
         newRom.save
         importedCount += 1
       else
-        logger.debug("Update Entry: " + romFound.title)
+        logger.debug("Update Entry: " + romFound.filename)
         romFound.updated_at = importTime
         romFound.save
       end
