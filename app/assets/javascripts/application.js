@@ -17,3 +17,4 @@
 //= require wice_grid
 //= require tether
 //= require bootstrap
+//= require swfobject
