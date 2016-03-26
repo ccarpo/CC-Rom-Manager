@@ -26,8 +26,8 @@
   <a href="/nesroms/<%= @rom.filename%>">Download</a>
 </p>
 <p>
-  <%= image_tag @rom.frontcover.url(:medium) %>
-  <%= image_tag @rom.backcover.url(:medium) %>
+  <%= image_tag(@rom.frontcoverlink, size: "300") %>
+  <%= image_tag(@rom.backcoverlink, size: "300") %>
 </p>
 <div>
     <div id="emulator">

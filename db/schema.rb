@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160322094702) do
+ActiveRecord::Schema.define(version: 20160325175701) do
 
   create_table "roms", force: :cascade do |t|
     t.string   "title"
@@ -35,6 +35,8 @@ ActiveRecord::Schema.define(version: 20160322094702) do
     t.integer  "backcover_file_size"
     t.datetime "backcover_updated_at"
     t.string   "console"
+    t.string   "frontcoverlink"
+    t.string   "backcoverlink"
   end
 
 end

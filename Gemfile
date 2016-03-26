@@ -24,7 +24,7 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 
 #------------------------
-gem "paperclip", "~> 4.3"
+#gem "paperclip", "~> 4.3"
 gem "wice_grid", '3.6.0.pre4'
 gem 'font-awesome-sass',  '~> 4.3'
 gem 'bootstrap', '~> 4.0.0.alpha3'
@@ -34,6 +34,7 @@ gem 'bootstrap', '~> 4.0.0.alpha3'
 gem 'simpleconfig'
 gem "swfobject-rails"
 gem 'httparty'
+gem 'sucker_punch', '~> 2.0'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

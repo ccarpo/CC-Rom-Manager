@@ -1,9 +1,9 @@
 class ImporterController < ApplicationController
 
 include HTTParty
-require 'net/http'
 
 BASE_API_URL = 'http://thegamesdb.net/api/'
+GAME_LIST = {'nes' => nil, 'snes' => nil}
 
   def index
   end
@@ -15,13 +15,13 @@ BASE_API_URL = 'http://thegamesdb.net/api/'
     #import snes
     @snesRomCount, @snesImportedRomCount, @snesDeletedCount = importByConsole(Console::SNES, config.snes.romPath, 'zip')
     #import gb(c)
-    @gbcRomCount, @gbcImportedRomCount, @gbcDeletedCount = importByConsole('gbc', config.gbc.romPath, 'zip')
+    @gbcRomCount, @gbcImportedRomCount, @gbcDeletedCount = importByConsole(Console::GB, config.gbc.romPath, 'zip')
     #import gba
-    @gbaRomCount, @gbaImportedRomCount, @gbaDeletedCount = importByConsole('gba', config.gba.romPath, 'zip')
+    @gbaRomCount, @gbaImportedRomCount, @gbaDeletedCount = importByConsole(Console::GBA, config.gba.romPath, 'zip')
     #import n64
-    @n64RomCount, @n64ImportedRomCount, @n64DeletedCount = importByConsole('n64', config.n64.romPath, 'zip')
+    @n64RomCount, @n64ImportedRomCount, @n64DeletedCount = importByConsole(Console::N64, config.n64.romPath, 'zip')
     #import sega
-    @segaRomCount, @segaImportedRomCount, @segaDeletedCount = importByConsole('sega', config.sega.romPath, 'zip')
+    @segaRomCount, @segaImportedRomCount, @segaDeletedCount = importByConsole(Console::SMS, config.sega.romPath, 'zip')
     render 'import'
   end
 
@@ -43,17 +43,9 @@ BASE_API_URL = 'http://thegamesdb.net/api/'
       if romFound == nil
         logger.debug("New Entry: "+title)
 
-        #create rom
-        newRom = Rom.new
-        newRom.filename = filename
-        newRom.console = console[0]
-        newRom.title = title
-
         #scrapeRom
-        scrape(title, console, newRom)
+        ImporterJob.perform_async(title, Console::NES, filename)
 
-
-        newRom.save
         importedCount += 1
       else
         logger.debug("Update Entry: " + romFound.filename)
@@ -72,78 +64,31 @@ BASE_API_URL = 'http://thegamesdb.net/api/'
     return romCount, importedCount, deletedCount
   end
 
+#TODO: remove after test
   def scrapeTitle()
     title = "Devil World"
     newRom = Rom.new
     newRom.filename = "Devil World (Europe).nes"
     newRom.console = Console::NES[0]
     newRom.title = title
-    scrape(title, Console::NES, newRom)
+    ImporterJob.perform_async(title, Console::NES, newRom)
     newRom.save
     render 'import'
   end
 
   def scrape(title, console, newRom)
-    logger.debug('-----------scrape '+title+'-------------------')
-    logger.debug(BASE_API_URL+'GetGamesList.php?name='+title+'&platform='+console[1])
-    games = HTTParty.get(BASE_API_URL+'GetGamesList.php?name='+title+'&platform='+console[1])
-    logger.debug(games)
-    if games['Data'] != nil
-      gameTitle = games['Data']['Game'][0]['GameTitle']
-      logger.debug(gameTitle)
-      if title == gameTitle
-        id = games['Data']['Game'][0]['id']
-        logger.debug(BASE_API_URL+'GetGame.php?id='+id)
-        game = HTTParty.get(BASE_API_URL+'GetGame.php?id='+id)
-        logger.debug(game)
 
-        # Cover
-        baseImgUrl = game['Data']['baseImgUrl']
-        for boxart in game['Data']['Game']['Images']['boxart']
-          if boxart['side'] = 'front'
-            logger.debug(baseImgUrl+boxart['__content__'])
-            url = URI.parse(baseImgUrl+boxart['__content__'])
-            Net::HTTP.start(url.host, url.port) do |http|
-              resp, data = http.get(url.path, nil)
-              #newRom.frontcover = resp.body
-            end
-          elsif boxart['side'] = 'back'
-            url = URI.parse(baseImgUrl+boxart['__content__'])
-            Net::HTTP.start(url.host, url.port) do |http|
-              resp, data = http.get(url.path, nil)
-              #newRom.backcover = resp.body
-            end
-          end
-        end
-
-        #Metadata
-        newRom.releasedate = game['Data']['Game']['ReleaseDate']
-        newRom.description = game['Data']['Game']['Overview']
-        newRom.players = game['Data']['Game']['Players']
-        newRom.publisher = game['Data']['Game']['Publisher']
-        newRom.developer = game['Data']['Game']['Developer']
-
-        #TODO: implement genres
-        if game['Data']['Game']['Genres']['genre'].kind_of?(Array)
-          for genre in game['Data']['Game']['Genres']['genre']
-            logger.debug(genre)
-          end
-        else
-          logger.debug(game['Data']['Game']['Genres']['genre'])
-        end
-      end
-    end
   end
 
 end
 
 module Console
-  NES = ['nes', 'Nintendo Entertainment System (NES)']
-  SNES = ['snes', 'Super Nintendo (SNES)']
-  N64 = ['n64', 'Nintendo 64']
-  GBA = ['gba', 'Nintendo Game Boy Advance']
-  GB = ['gbc', 'Nintendo Game Boy']
-  GBC = ['gbc', 'Nintendo Game Boy Color']
-  SMD = ['smd', 'Sega Mega Drive']
-  SMS = ['sms', 'Sega Master System']
+  NES = ['nes', 'Nintendo Entertainment System (NES)', 7]
+  SNES = ['snes', 'Super Nintendo (SNES)', 6]
+  N64 = ['n64', 'Nintendo 64', 3]
+  GBA = ['gba', 'Nintendo Game Boy Advance', 5]
+  GB = ['gbc', 'Nintendo Game Boy', 4]
+  GBC = ['gbc', 'Nintendo Game Boy Color', 41]
+  SMD = ['smd', 'Sega Mega Drive', 36]
+  SMS = ['sms', 'Sega Master System', 35]
 end

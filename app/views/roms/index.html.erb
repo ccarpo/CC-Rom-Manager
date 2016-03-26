@@ -14,7 +14,7 @@
   end
 
   g.column name: "Cover" do |rom|
-    image_tag rom.frontcover.url(:small)
+    image_tag(rom.frontcoverlink, size: "64")
   end
 
   g.column do |rom|

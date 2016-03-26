@@ -5,9 +5,8 @@ Next TODOs
 Test Importer for other consoles,
 Test Importer for deleted Roms
 Scraper
-  Cache list of games
   Save covers
   Genres
-  Run in Background
+Import Background Notification
+Start Emulators with ROMs
 CSS
-Save links instead of images?
