@@ -3,65 +3,81 @@ class ImporterController < ApplicationController
 include HTTParty
 
 BASE_API_URL = 'http://thegamesdb.net/api/'
-GAME_LIST = {'nes' => nil, 'snes' => nil}
-
-  def index
-  end
+GAME_LIST = {}
 
   def importAll
+    @importStatusId = {}
     config = SimpleConfig.for(:application)
+
     #import nes
-    @nesRomCount, @nesImportedRomCount, @nesDeletedCount = importByConsole(Console::NES, config.nes.romPath, 'nes')
+    importByConsole(Console::NES, config.nes.romPath, 'nes')
     #import snes
-    @snesRomCount, @snesImportedRomCount, @snesDeletedCount = importByConsole(Console::SNES, config.snes.romPath, 'zip')
+    importByConsole(Console::SNES, config.snes.romPath, 'zip')
     #import gb(c)
-    @gbcRomCount, @gbcImportedRomCount, @gbcDeletedCount = importByConsole(Console::GB, config.gbc.romPath, 'zip')
+    importByConsole(Console::GB, config.gbc.romPath, 'zip')
     #import gba
-    @gbaRomCount, @gbaImportedRomCount, @gbaDeletedCount = importByConsole(Console::GBA, config.gba.romPath, 'zip')
+    importByConsole(Console::GBA, config.gba.romPath, 'zip')
     #import n64
-    @n64RomCount, @n64ImportedRomCount, @n64DeletedCount = importByConsole(Console::N64, config.n64.romPath, 'zip')
+    importByConsole(Console::N64, config.n64.romPath, 'zip')
     #import sega
-    @segaRomCount, @segaImportedRomCount, @segaDeletedCount = importByConsole(Console::SMS, config.sega.romPath, 'zip')
-    render 'import'
+    importByConsole(Console::SMS, config.sega.romPath, 'sms')
+    render 'index'
   end
 
   def importByConsole(console, folder, fileExtension)
     logger.debug("-------------------"+console[0]+"---------------------")
+
     importTime = Time.now
     logger.debug(folder)
     files = Dir[folder+"/*."+fileExtension]
     logger.debug(files.to_s)
     consoleRoms = Rom.where("console LIKE \""+console[0]+"\" ")
-    romCount = consoleRoms.count
-    importedCount, deletedCount = 0
+    @romCount = consoleRoms.count
+    deletedCount = 0
+
+    #create importstatus to track import
+    status = ImportStatus.new
+    status.starttime = importTime
+    status.console = console[0]
+    status.totalCount = files.count
+    status.scrapeCount = 0
+    status.ignoreCount = 0
+    status.deleteCount = 0
+    status.status = "IMPORTING"
+    status.save
+    @importStatusId[console[0]] = status.id
+
     for file in files
       # get title from file named
       filename = file.gsub(/.*\//, '')
-      title = filename.gsub(/([\w\d\s\-\&\.\,\!\'\+]*)(\(.*\))*\.\w\w\w?/,'\1').strip
-      romFound = Rom.where("filename LIKE \""+filename+"\" and console LIKE \""+console[0]+"\" ").first
-      #check if rom is already in DB
-      if romFound == nil
-        logger.debug("New Entry: "+title)
+      title = filename.gsub(/([\w\d\s\-\&\.\,\!\'\+]*)(\(.*\))*\.\w\w\w?$/,'\1').strip
+      if title != nil
+        romFound = Rom.where("filename LIKE \""+filename+"\" and console LIKE \""+console[0]+"\" ").first
+        #check if rom is already in DB
+        if romFound == nil
+          logger.debug("New Entry: "+title)
 
-        #scrapeRom
-        ImporterJob.perform_async(title, Console::NES, filename)
-
-        importedCount += 1
+            #scrapeRom
+          ImporterJob.perform_async(title, Console::NES, filename, status.id)
+        else
+          logger.debug("Update Entry: " + romFound.filename)
+          romFound.updated_at = importTime
+          romFound.save
+          updateStatus(status.id, "ignore")
+        end
       else
-        logger.debug("Update Entry: " + romFound.filename)
-        romFound.updated_at = importTime
-        romFound.save
+        #title could not be parsed
+        ImportStatus.updateStatus(status.id, "ignore")
       end
     end
 
     for rom in consoleRoms
       if rom.updated_at < importTime
         #not updated, not in folder anymore, delete
-        deletedCount += 1
         rom.destroy
+        ImportStatus.updateStatus(status.id, "delete")
       end
     end
-    return romCount, importedCount, deletedCount
   end
 
 #TODO: remove after test
@@ -73,11 +89,14 @@ GAME_LIST = {'nes' => nil, 'snes' => nil}
     newRom.title = title
     ImporterJob.perform_async(title, Console::NES, newRom)
     newRom.save
-    render 'import'
+    render 'importStatus/'+status.id
   end
 
-  def scrape(title, console, newRom)
-
+  def deleteStatus
+    logger.debug("------------delete status "+params[:id]+"-------------")
+    status = ImportStatus.find(params[:id])
+    status.destroy
+    render '/importer/index'
   end
 
 end

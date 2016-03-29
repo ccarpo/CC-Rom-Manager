@@ -15,6 +15,9 @@ Rails.application.routes.draw do
   get 'configurations' => 'configurations#index'
   post 'configurations' => 'configurations#save'
   get 'importer/scrapeTitle' => 'importer#scrapeTitle'
+  get 'importer' => 'importer#index'
+  get 'importer/importStatus/:id' => 'importer#importStatus'
+  get 'importer/deleteStatus/:id' => 'importer#deleteStatus'
 
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase

@@ -1,6 +1,6 @@
 <h1>Importer</h1>
 
-<p><%= link_to("Import All" importer_importAll) %></p>
+<p><%= link_to("Import All", importer_importAll_path) %></p>
 <p> Import NES titles</p>
 <p> Import SNES titles</p>
 <p> Import N64 titles</p>
@@ -9,3 +9,33 @@
 <p> Import GBC titles</p>
 <p> Import SMS titles</p>
 <p> Import SMD titles</p>
+
+<h2>Pending Imports</h2>
+<table>
+  <thead>
+    <th>ID</th>
+    <th>Status</th>
+    <th>Total Count</th>
+    <th>Scrape Count</th>
+    <th>Delete Count</th>
+    <th>Ignore Count</th>
+    <th>Started</th>
+    <th>Last Update</th>
+    <th>Action</th>
+  </thead>
+  <tbody>
+    <% for importStatus in ImportStatus.all %>
+      <tr>
+        <td><%= importStatus.id %></td>
+        <td><%= importStatus.status %></td>
+        <td><%= importStatus.totalCount %></td>
+        <td><%= importStatus.scrapeCount %></td>
+        <td><%= importStatus.deleteCount %></td>
+        <td><%= importStatus.ignoreCount %></td>
+        <td><%= importStatus.created_at %></td>
+        <td><%= importStatus.updated_at %></td>
+        <td><%= link_to("Cancel Import", controller: "importer", action: "deleteStatus", id: importStatus.id) %></td>
+      </tr>
+    <% end  %>
+  </body>
+</table>

@@ -4,7 +4,7 @@ class ImporterJob
 
   workers 4
 
-  def perform(title, console, filename)
+  def perform(title, console, filename, statusId)
     logger.debug('-----------scrape '+title+'-------------------')
     if ImporterController::GAME_LIST[console[0]] == nil
       logger.debug('Download game list for '+console[0])
@@ -47,6 +47,8 @@ class ImporterJob
       end
     end
     newRom.save
+    ImportStatus.updateStatus(statusId, "scrape")
+
   end
 
 private

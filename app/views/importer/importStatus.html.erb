@@ -1,0 +1,7 @@
+<% status = ImportStatus.find(params[:id])  %>
+<p>Import in status <%= status.status %></p>
+<p>ROMs to import: <%= status.totalCount %></p>
+<p>ROMs already in DB: <%= @romCount%></p>
+<p>ROMs already scraped: <%= status.scrapeCount %></p>
+<p>ROMs ignored: <%= status.ignoreCount %></p>
+<p>ROMs from DB removed: <%= status.deleteCount %></p>

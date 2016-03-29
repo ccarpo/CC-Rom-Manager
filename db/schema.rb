@@ -11,7 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160325175701) do
+ActiveRecord::Schema.define(version: 20160327144642) do
+
+  create_table "import_statuses", force: :cascade do |t|
+    t.datetime "starttime"
+    t.datetime "endtime"
+    t.integer  "deleteCount"
+    t.integer  "scrapeCount"
+    t.string   "status"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.string   "console"
+    t.integer  "totalCount"
+    t.integer  "ignoreCount"
+  end
 
   create_table "roms", force: :cascade do |t|
     t.string   "title"
