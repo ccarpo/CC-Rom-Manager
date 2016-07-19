@@ -6,7 +6,7 @@ Test Importer for other consoles,
 Test Importer for deleted Roms
 Scraper
   Save covers
-  Genres
-Import Background Notification
+Edit entry
+  Upload Covers
 Start Emulators with ROMs
 CSS

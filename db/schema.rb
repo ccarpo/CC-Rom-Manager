@@ -11,7 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160327144642) do
+ActiveRecord::Schema.define(version: 20160330133856) do
+
+  create_table "genres", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "rom_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "genres", ["rom_id"], name: "index_genres_on_rom_id"
 
   create_table "import_statuses", force: :cascade do |t|
     t.datetime "starttime"
@@ -24,6 +33,7 @@ ActiveRecord::Schema.define(version: 20160327144642) do
     t.string   "console"
     t.integer  "totalCount"
     t.integer  "ignoreCount"
+    t.string   "name"
   end
 
   create_table "roms", force: :cascade do |t|

@@ -6,7 +6,7 @@ class ImporterJob
 
   def perform(title, console, filename, statusId)
     logger.debug('-----------scrape '+title+'-------------------')
-    if ImporterController::GAME_LIST[console[0]] == nil
+    if ImporterController::GAME_LIST[console[0]] == nil || ImporterController::GAME_LIST[console[0]] == []
       logger.debug('Download game list for '+console[0])
       ImporterController::GAME_LIST[console[0]] = HTTParty.get(ImporterController::BASE_API_URL+'GetPlatformGames.php?platform='+console[2].to_s)
     end
@@ -35,18 +35,19 @@ class ImporterJob
       newRom.publisher = game['Data']['Game']['Publisher']
       newRom.developer = game['Data']['Game']['Developer']
 
-      #TODO: implement genres
+      newRom.save
+
       if game['Data']['Game']['Genres'] != nil
         if game['Data']['Game']['Genres']['genre'].kind_of?(Array)
           for genre in game['Data']['Game']['Genres']['genre']
-            logger.debug(genre)
+            newRom.genres.create(name: genre.to_s)
           end
         else
-          logger.debug(game['Data']['Game']['Genres']['genre'])
+          newRom.genres.create(name: genre.to_s)
         end
       end
+      newRom.save
     end
-    newRom.save
     ImportStatus.updateStatus(statusId, "scrape")
 
   end

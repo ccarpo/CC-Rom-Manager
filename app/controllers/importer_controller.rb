@@ -21,7 +21,7 @@ GAME_LIST = {}
     importByConsole(Console::N64, config.n64.romPath, 'zip')
     #import sega
     importByConsole(Console::SMS, config.sega.romPath, 'sms')
-    render 'index'
+    redirect_to '/importer'
   end
 
   def importByConsole(console, folder, fileExtension)
@@ -32,6 +32,7 @@ GAME_LIST = {}
     files = Dir[folder+"/*."+fileExtension]
     logger.debug(files.to_s)
     consoleRoms = Rom.where("console LIKE \""+console[0]+"\" ")
+    logger.debug(consoleRoms.to_s)
     @romCount = consoleRoms.count
     deletedCount = 0
 
@@ -47,7 +48,10 @@ GAME_LIST = {}
     status.save
     @importStatusId[console[0]] = status.id
 
+    fCounter = 0
     for file in files
+      fCounter += 1
+      logger.debug("============"+fCounter.to_s+"============")
       # get title from file named
       filename = file.gsub(/.*\//, '')
       title = filename.gsub(/([\w\d\s\-\&\.\,\!\'\+]*)(\(.*\))*\.\w\w\w?$/,'\1').strip
@@ -59,11 +63,12 @@ GAME_LIST = {}
 
             #scrapeRom
           ImporterJob.perform_async(title, Console::NES, filename, status.id)
+
         else
           logger.debug("Update Entry: " + romFound.filename)
           romFound.updated_at = importTime
           romFound.save
-          updateStatus(status.id, "ignore")
+          ImportStatus.updateStatus(status.id, "ignore")
         end
       else
         #title could not be parsed
@@ -96,7 +101,7 @@ GAME_LIST = {}
     logger.debug("------------delete status "+params[:id]+"-------------")
     status = ImportStatus.find(params[:id])
     status.destroy
-    render '/importer/index'
+    redirect_to '/importer'
   end
 
 end

@@ -44,7 +44,7 @@ class RomsController < ApplicationController
 
 private
   def rom_params
-    params.require(:rom).permit(:title, :description, :publisher, :developer, :rating, :players, :frontcover, :frontcover_file_name, :frontcover_file_size, :backcover, :backcover_file_name, :backcover_file_size)
+    params.require(:rom).permit(:title, :description, :publisher, :developer, :rating, :players, :frontcover, :frontcover_file_name, :frontcover_file_size, :backcover, :backcover_file_name, :backcover_file_size, :genres)
   end
 
 end

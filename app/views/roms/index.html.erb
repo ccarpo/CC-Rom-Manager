@@ -4,20 +4,26 @@
 
 <%= grid(@rom_grid, show_filters: :always) do |g|
 
-  g.column name: "Konsole", attribute: 'console',
+  g.blank_slate  do
+    "No ROMs yet :-("
+  end
+
+  g.column name: "Cover" do |rom|
+    link_to(image_tag(rom.frontcoverlink, size: "64"), rom_path(rom))
+  end
+
+  g.column  name: "Titel", attribute: 'title' do |rom|
+    link_to(rom.title, rom_path(rom))
+  end
+
+  g.column name: "Konsole", attribute: 'console', auto_reload: true,
     custom_filter: {'NES' => 'nes', 'SNES' => 'snes', 'GB(C)' => 'gbc', 'GBA' => 'gba', 'N64' => 'n64', 'SEGA' => 'sega'} do |rom|
     rom.console
   end
 
-  g.column  name: "Titel", attribute: 'title' do |rom|
-    rom.title
-  end
-
-  g.column name: "Cover" do |rom|
-    image_tag(rom.frontcoverlink, size: "64")
-  end
-
-  g.column do |rom|
-    link_to('Show', rom_path(rom))
+  g.column  name: "Genres" do |rom|
+    rom.genres.to_s
   end
 end -%>
+
+<p><%= link_to("Import Roms",importer_path) %></p>
