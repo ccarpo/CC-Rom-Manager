@@ -22,7 +22,15 @@
   end
 
   g.column  name: "Genres" do |rom|
-    rom.genres.to_s
+    genres_string = ""
+    rom.genres.each do |genre|
+      if genres_string == ""
+        genres_string = genre.name
+      else
+       genres_string = genres_string + ", " + genre.name
+      end
+    end
+    genres_string
   end
 end -%>
 
