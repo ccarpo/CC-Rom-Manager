@@ -4,6 +4,7 @@ include HTTParty
 
 BASE_API_URL = 'http://thegamesdb.net/api/'
 GAME_LIST = {}
+# get thegamesdbId from http://thegamesdb.net/api/GetPlatformsList.php
 CONSOLES = {
   "NES" => {id: 'nes', name: 'Nintendo Entertainment System (NES)', thegamesdbId: 7, romPath: SimpleConfig.for(:application).nes.romPath, fileExtension: SimpleConfig.for(:application).nes.fileExtension},
   "SNES"=> {id: 'snes', name: 'Super Nintendo (SNES)', thegamesdbId: 6, romPath: SimpleConfig.for(:application).snes.romPath, fileExtension: SimpleConfig.for(:application).snes.fileExtension},
@@ -12,8 +13,8 @@ CONSOLES = {
   "GB"  =>  {id: 'gb', name: 'Nintendo Game Boy', thegamesdbId: 4, romPath: SimpleConfig.for(:application).gb.romPath, fileExtension: SimpleConfig.for(:application).gb.fileExtension},
   "GBC" => {id: 'gbc', name: 'Nintendo Game Boy Color', thegamesdbId: 41, romPath: SimpleConfig.for(:application).gbc.romPath, fileExtension: SimpleConfig.for(:application).gbc.fileExtension},
   "SMD" => {id: 'smd', name: 'Sega Mega Drive', thegamesdbId: 36, romPath: SimpleConfig.for(:application).segadrive.romPath, fileExtension: SimpleConfig.for(:application).segadrive.fileExtension},
-  "SMS" => {id: 'sms', name: 'Sega Master System', thegamesdbId: 35, romPath: SimpleConfig.for(:application).segasystem.romPath, fileExtension: SimpleConfig.for(:application).segasystem.fileExtension}
-  "SCUMM"  => {id: 'scumm', name: 'SCUMM Spiele', thegamesdbId: 1, romPath: SimpleConfig.for(:application).scumm.romPath, fileExtension: SimpleConfig.for(:application).scumm.fileExtension}
+  "SMS" => {id: 'sms', name: 'Sega Master System', thegamesdbId: 35, romPath: SimpleConfig.for(:application).segasystem.romPath, fileExtension: SimpleConfig.for(:application).segasystem.fileExtension},
+  "SCUMM"=> {id: 'scumm', name: 'SCUMM Spiele', thegamesdbId: 1, romPath: SimpleConfig.for(:application).scumm.romPath, fileExtension: SimpleConfig.for(:application).scumm.fileExtension}
 }
 
   def importAll
@@ -59,6 +60,7 @@ CONSOLES = {
     status.scrapeCount = 0
     status.ignoreCount = 0
     status.deleteCount = 0
+    status.asyncCount = 0
     status.status = "IMPORTING"
     status.save
     @importStatusId[console[:id]] = status.id
