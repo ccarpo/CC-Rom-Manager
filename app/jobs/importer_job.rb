@@ -4,17 +4,18 @@ class ImporterJob
 
   workers 4
 
-  def perform(title, console, filename, statusId)
+  def perform(title, console, filepath, filename, importStatus)
     logger.debug('-----------scrape '+title+'-------------------')
-    if ImporterController::GAME_LIST[console[0]] == nil || ImporterController::GAME_LIST[console[0]] == []
-      logger.debug('Download game list for '+console[0])
-      ImporterController::GAME_LIST[console[0]] = HTTParty.get(ImporterController::BASE_API_URL+'GetPlatformGames.php?platform='+console[2].to_s)
+    if ImporterController::GAME_LIST[console[:id]] == nil || ImporterController::GAME_LIST[console[:id]] == []
+      logger.debug('Download game list for '+console[:id])
+      ImporterController::GAME_LIST[console[:id]] = HTTParty.get(ImporterController::BASE_API_URL+'GetPlatformGames.php?platform='+console[:thegamesdbId].to_s)
     end
-    game = findGameInGameList(title, ImporterController::GAME_LIST[console[0]])
+    game = findGameInGameList(title, ImporterController::GAME_LIST[console[:id]])
 
     newRom = Rom.new
+    newRom.filepath = filepath
     newRom.filename = filename
-    newRom.console = console[0]
+    newRom.console = console[:id]
     newRom.title = title
 
     if game != nil
@@ -35,7 +36,7 @@ class ImporterJob
       newRom.publisher = game['Data']['Game']['Publisher']
       newRom.developer = game['Data']['Game']['Developer']
 
-      newRom.save
+      #newRom.save
 
       if game['Data']['Game']['Genres'] != nil
         if game['Data']['Game']['Genres']['genre'].kind_of?(Array)
@@ -46,8 +47,10 @@ class ImporterJob
           newRom.genres.create(name: genre.to_s)
         end
       end
-      newRom.save
     end
+    newRom.save
+
+    ImportStatus.reduceAsyncCount(statusId)
     ImportStatus.updateStatus(statusId, "scrape")
 
   end
@@ -56,8 +59,8 @@ private
   def findGameInGameList(title, gameList)
     for game in gameList['Data']['Game']
       if game['GameTitle'] == title
-        logger.debug('http://thegamesdb.net/api/GetGame.php?id='+game['id'])
-        return HTTParty.get('http://thegamesdb.net/api/GetGame.php?id='+game['id'])
+        logger.debug(ImportController::BASE_API_URL+'/GetGame.php?id='+game['id'])
+        return HTTParty.get(ImportController::BASE_API_URL+'/GetGame.php?id='+game['id'])
       end
     end
     return nil

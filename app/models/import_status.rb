@@ -18,4 +18,16 @@ class ImportStatus < ActiveRecord::Base
     end
     updatedStatus.save
   end
+
+  def self.reduceAsyncCount(statusId)
+    status = ImportStatus.find(statusId)
+    status.asyncCount -=  1
+    status.save
+
+    #remove import status when last async iimport finished
+    if status.asyncCount <= 0
+      status.destroy
+    end
+  end
+
 end

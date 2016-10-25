@@ -25,9 +25,9 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 #------------------------
 #gem "paperclip", "~> 4.3"
-gem "wice_grid", '3.6.0.pre4'
-gem 'font-awesome-sass',  '~> 4.3'
-gem 'bootstrap', '~> 4.0.0.alpha3'
+gem "wice_grid", '3.6.2'
+gem 'font-awesome-sass',  '~> 4.7'
+gem 'bootstrap', '~> 4.0.0.alpha5'
 #source 'https://rails-assets.org' do
   gem 'rails-assets-tether', '>= 1.1.0'
 #end

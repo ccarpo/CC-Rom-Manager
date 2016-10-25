@@ -1,81 +1,89 @@
-<p>
-  <strong>Title:</strong>
-  <%= @rom.title %>
-</p>
-<p>
-  <strong>Description:</strong>
-  <%= @rom.description %>
-</p>
-<p>
-  <strong>Publisher:</strong>
-  <%= @rom.publisher %>
-</p>
-<p>
-  <strong>Developer:</strong>
-  <%= @rom.developer %>
-</p>
-<p>
-  <strong>Rating:</strong>
-  <%= @rom.rating %>
-</p>
-<p>
-  <strong>Players:</strong>
-  <%= @rom.players %>
-</p>
-<p>
-  <strong>Genres:</strong>
-  <%= @rom.genres.to_s %>
-</p>
-<p>
-  <a href="/nesroms/<%= @rom.filename%>">Download</a>
-</p>
-<p>
-  <%= image_tag(@rom.frontcoverlink, size: "300") %>
-  <%= image_tag(@rom.backcoverlink, size: "300") %>
-</p>
-<div>
-    <div id="emulator">
-        <p>To play this game, please, download the latest Flash player!</p>
-        <br>
-        <a href="http://www.adobe.com/go/getflashplayer">
-            <img src="//www.adobe.com/images/shared/download_buttons/get_adobe_flash_player.png" alt="Get Adobe Flash player"/>
-        </a>
+<div class="container theme-showcase">
+    <div class="row">
+        <div class="col-sm-4">
+            <p>
+                <%= image_tag(@rom.frontcoverlink, size: "300") %>
+                <%= image_tag(@rom.backcoverlink, size: "300") %>
+            </p>
+        </div>
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <%= @rom.title %>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <p>
+                        <strong>Description:</strong>
+                        <%= @rom.description %>
+                    </p>
+                    <p>
+                        <strong>Publisher:</strong>
+                        <%= @rom.publisher %>
+                    </p>
+                    <p>
+                        <strong>Developer:</strong>
+                        <%= @rom.developer %>
+                    </p>
+                    <p>
+                        <strong>Rating:</strong>
+                        <%= @rom.rating %>
+                    </p>
+                    <p>
+                        <strong>Players:</strong>
+                        <%= @rom.players %>
+                    </p>
+                    <p>
+                        <strong>Genres:</strong>
+                        <%= Genre.genreString(@rom.genres) %>
+                    </p>
+                    <p>
+                        <button type="button" class="btn btn-lg btn-default">
+                            <a href="<%= @rom.filepath %>/<%= @rom.filename%>">Download</a>
+                        </button>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div id="emulator">
+                <p>To play this game, please, download the latest Flash player!</p>
+                <br>
+                <a href="http://www.adobe.com/go/getflashplayer">
+                    <img src="//www.adobe.com/images/shared/download_buttons/get_adobe_flash_player.png" alt="Get Adobe Flash player"/>
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 
 <script type="text/javascript">
 
-    var resizeOwnEmulator = function(width, height)
-    {
+    var resizeOwnEmulator = function (width, height) {
         var emulator = $('#emulator');
         emulator.css('width', width);
         emulator.css('height', height);
     }
 
-    $(function()
-    {
-        function embed()
-        {
+    $(function () {
+        function embed() {
             var emulator = $('#emulator');
-            if(emulator)
-            {
-                var flashvars =
-                {
-                    system : '<%= @rom.console %>',
-                    url : "/nesroms/<%=raw @rom.filename %>"
+            if (emulator) {
+                var flashvars = {
+                    system: '<%= @rom.console %>',
+                    url: "<%= @rom.filepath %>/<%=raw @rom.filename %>"
                 };
                 var params = {};
                 var attributes = {};
-
+                var nesBoxUrl = '<%= SimpleConfig.for(:application).common.nesBoxUrl %>';
                 params.allowscriptaccess = 'sameDomain';
                 params.allowFullScreen = 'true';
                 params.allowFullScreenInteractive = 'true';
-
-                swfobject.embedSWF('/nesbox/Nesbox.swf', 'emulator', '640', '480', '11.2.0', '/nesbox/expressInstall.swf', flashvars, params, attributes);
+                swfobject.embedSWF(nesBoxUrl + '/Nesbox.swf', 'emulator', '640', '480', '11.2.0', nesBoxUrl + '/expressInstall.swf', flashvars, params, attributes);
             }
         }
 
         embed();
     });
-
 </script>

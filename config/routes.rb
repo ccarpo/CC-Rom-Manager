@@ -14,8 +14,8 @@ Rails.application.routes.draw do
   get 'importer/importAll' => 'importer#importAll'
   get 'configurations' => 'configurations#index'
   post 'configurations' => 'configurations#save'
-  get 'importer/scrapeTitle' => 'importer#scrapeTitle'
   get 'importer' => 'importer#index'
+  get 'importer/importConsole' => 'importer#importConsole'
   get 'importer/importStatus/:id' => 'importer#importStatus'
   get 'importer/deleteStatus/:id' => 'importer#deleteStatus'
 

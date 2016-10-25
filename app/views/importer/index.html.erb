@@ -1,14 +1,14 @@
 <h1>Importer</h1>
 
 <p><%= link_to("Import All", importer_importAll_path) %></p>
-<p> Import NES titles</p>
-<p> Import SNES titles</p>
-<p> Import N64 titles</p>
-<p> Import GBA titles</p>
-<p> Import GB titles</p>
-<p> Import GBC titles</p>
-<p> Import SMS titles</p>
-<p> Import SMD titles</p>
+<p><%= link_to("Import NES titles", {:controller => "importer", :action => "importConsole", :console => "NES"}) %> </p>
+<p><%= link_to("Import SNES titles", {:controller => "importer", :action => "importConsole", :console => "SNES"}) %> </p>
+<p><%= link_to("Import N64 titles", {:controller => "importer", :action => "importConsole", :console => "N64"}) %> </p>
+<p><%= link_to("Import GBA titles", {:controller => "importer", :action => "importConsole", :console => "GBA"}) %> </p>
+<p><%= link_to("Import GB titles", {:controller => "importer", :action => "importConsole", :console => "GB"}) %> </p>
+<p><%= link_to("Import GBC titles", {:controller => "importer", :action => "importConsole", :console => "GBC"}) %> </p>
+<p><%= link_to("Import SMS titles", {:controller => "importer", :action => "importConsole", :console => "SMS"}) %> </p>
+<p><%= link_to("Import SMD titles", {:controller => "importer", :action => "importConsole", :console => "SMD"}) %> </p>
 
 <h2>Pending Imports</h2>
 <table>

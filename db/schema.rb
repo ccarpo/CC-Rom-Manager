@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160330133856) do
+ActiveRecord::Schema.define(version: 20161024085300) do
 
   create_table "genres", force: :cascade do |t|
     t.string   "name"
@@ -21,6 +21,14 @@ ActiveRecord::Schema.define(version: 20160330133856) do
   end
 
   add_index "genres", ["rom_id"], name: "index_genres_on_rom_id"
+
+  create_table "import_games", force: :cascade do |t|
+    t.string   "status"
+    t.string   "gameId"
+    t.integer  "importStatusId"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
 
   create_table "import_statuses", force: :cascade do |t|
     t.datetime "starttime"
@@ -34,6 +42,7 @@ ActiveRecord::Schema.define(version: 20160330133856) do
     t.integer  "totalCount"
     t.integer  "ignoreCount"
     t.string   "name"
+    t.integer  "asyncCount"
   end
 
   create_table "roms", force: :cascade do |t|
@@ -60,6 +69,7 @@ ActiveRecord::Schema.define(version: 20160330133856) do
     t.string   "console"
     t.string   "frontcoverlink"
     t.string   "backcoverlink"
+    t.string   "filepath"
   end
 
 end
